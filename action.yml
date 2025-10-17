@@ -1,0 +1,46 @@
+name: "AI Code Review Action"
+description: "Executa revisão automática de código com GPT-5 e publica feedback no PR."
+author: "Filipe Pires"
+branding:
+  icon: "check-circle"
+  color: "blue"
+
+inputs:
+  openai_api_key:
+    description: "Chave da API da OpenAI. Use secrets.OPENAI_API_KEY no repositório consumidor."
+    required: true
+  analyze_limit:
+    description: "Número máximo de arquivos a analisar no PR."
+    required: false
+    default: "10"
+  model:
+    description: "Modelo OpenAI a ser usado (ex: gpt-5)."
+    required: false
+    default: "gpt-5"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run AI Review script
+      env:
+        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+        OPENAI_MODEL: ${{ inputs.model }}
+        ANALYZE_LIMIT: ${{ inputs.analyze_limit }}
+      run: |
+        python scripts/ai_review_pr.py
