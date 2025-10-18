@@ -294,7 +294,7 @@ def call_claude(prompt, code_chunk):
     from anthropic import Anthropic
     client = Anthropic(api_key=CLAUDE_API_KEY)
     response = client.messages.create(
-        model=MODEL_NAME if MODEL_NAME is not None else 'claude-sonnet-4-5',
+        model=MODEL_NAME if MODEL_NAME.startswith("claude") else 'claude-sonnet-4-5',
         max_tokens=2000,  # Limite de tokens para resposta
         messages=[
             {"role": "user", "content": f"{prompt}\n\n{code_chunk}"}
@@ -399,7 +399,7 @@ if __name__ == "__main__":
     # 🔍 DEBUG E VALIDAÇÃO INICIAL
     # ===============================================
     print("======== DEBUG VARS: ========")
-    for var in ["GITHUB_REPOSITORY", "GITHUB_PR_NUMBER", "OPENAI_API_KEY","OPENAI_MODEL", "CLAUDE_API_KEY", "ANALYZE_LIMIT", "IGNORE_FILE_CONTENT", "IGNORE_FILE_PATH"]:
+    for var in ["GITHUB_REPOSITORY", "GITHUB_PR_NUMBER", "OPENAI_API_KEY", "CLAUDE_API_KEY", "MODEL_NAME", "ANALYZE_LIMIT", "IGNORE_FILE_CONTENT", "IGNORE_FILE_PATH"]:
         print(f" - {var}={os.getenv(var)}")
     print("=============================")
 

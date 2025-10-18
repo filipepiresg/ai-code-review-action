@@ -160,7 +160,7 @@ runs:
         GITHUB_PR_NUMBER: ${{ inputs.pr_number }}
 
         # Configurações de análise
-        OPENAI_MODEL: ${{ inputs.model }}
+        MODEL_NAME: ${{ inputs.model }}
         ANALYZE_LIMIT: ${{ inputs.analyze_limit }}
         IGNORE_FILE_CONTENT: ${{ inputs.ignore_file_content }}
         IGNORE_FILE_PATH: ${{ inputs.ignore_file_path }}
