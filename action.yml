@@ -116,14 +116,6 @@ runs:
         python-version: "3.11" # Versão mínima necessária para as dependências
       # Configura ambiente Python para execução dos scripts
 
-    - name: Cache Python dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-
     - name: Install dependencies
       shell: bash
       run: |
