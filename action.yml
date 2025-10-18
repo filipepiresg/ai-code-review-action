@@ -24,7 +24,7 @@ inputs:
     required: false
     default: ""
 
-  claude_ai_key:
+  claude_api_key:
     description: |
       Chave da API da Anthropic Claude para usar Claude 3.x.
       Configure em: Settings > Secrets > Actions > CLAUDEAI_API_KEY

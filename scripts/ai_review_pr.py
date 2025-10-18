@@ -294,7 +294,7 @@ def call_claude(prompt, code_chunk):
     from anthropic import Anthropic
     client = Anthropic(api_key=CLAUDE_API_KEY)
     response = client.messages.create(
-        model=MODEL_NAME if is not None else 'claude-sonnet-4-5',
+        model=MODEL_NAME if MODEL_NAME is not None else 'claude-sonnet-4-5',
         max_tokens=2000,  # Limite de tokens para resposta
         messages=[
             {"role": "user", "content": f"{prompt}\n\n{code_chunk}"}
@@ -449,7 +449,7 @@ if __name__ == "__main__":
         # Verifica se esse contéudo já foi cacheado
         file_hash = get_file_hash(content)
         cached = load_cache(file_hash)
-        if cached is not None:
+        if cached is not:
             log(f"🚫 Arquivo já avaliado: {f.filename}")
             continue
 
