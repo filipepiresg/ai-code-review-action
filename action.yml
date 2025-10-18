@@ -110,6 +110,12 @@ runs:
       uses: actions/checkout@v4
       # Baixa o código do repositório para análise
 
+    - name: Copy requirements.txt
+      shell: bash
+      run: |
+        cp ${{ github.action_path }}/requirements.txt .
+        ls -la "${{ github.action_path }}"
+
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
