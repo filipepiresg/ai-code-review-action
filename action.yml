@@ -106,21 +106,23 @@ runs:
     # ===============================================
     # 📥 PREPARAÇÃO DO AMBIENTE
     # ===============================================
+    # Baixa o código do repositório para análise
     - name: Checkout repository
       uses: actions/checkout@v4
-      # Baixa o código do repositório para análise
 
-    - name: Copy requirements.txt
-      shell: bash
-      run: |
-        ls -la "${{ github.action_path }}"
-        cp ${{ github.action_path }}/requirements.txt .
+    - name: Cache pip
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles(format('{0}/requirements.txt', github.action_path)) }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
+    # Configura ambiente Python para execução dos scripts
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.11" # Versão mínima necessária para as dependências
-      # Configura ambiente Python para execução dos scripts
 
     - name: Install dependencies
       shell: bash
