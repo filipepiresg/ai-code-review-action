@@ -449,7 +449,7 @@ if __name__ == "__main__":
         # Verifica se esse contéudo já foi cacheado
         file_hash = get_file_hash(content)
         cached = load_cache(file_hash)
-        if cached is not:
+        if cached is not None:
             log(f"🚫 Arquivo já avaliado: {f.filename}")
             continue
 
