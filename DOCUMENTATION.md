@@ -105,6 +105,7 @@ branding:
 | `model`               | string | Não         | Modelo de IA a usar (padrão: gpt-5)        |
 | `ignore_file_content` | string | Não         | Padrões regex para ignorar                 |
 | `ignore_file_path`    | string | Não         | Caminho do arquivo de ignore               |
+| `guidelines_path`     | string | Não         | Caminho do arquivo de diretrizes           |
 
 > \*Pelo menos uma das chaves de API é obrigatória.
 
@@ -121,6 +122,7 @@ branding:
 #### Melhorias Implementadas
 
 - ✅ **Cache Automático**: Sistema de cache baseado em GitHub Artifacts
+- ✅ **Diretrizes Personalizadas**: Sistema de diretrizes configurável por projeto
 - ✅ **Cache de Dependências**: Usa `actions/cache@v4` para acelerar builds
 - ✅ **Requirements.txt**: Gerenciamento centralizado de dependências
 - ✅ **Variáveis Renomeadas**: `claude_ai_key` → `claude_api_key`
@@ -178,6 +180,32 @@ def should_ignore(filename, ignore_globs, ignore_regex):
 - ✅ **Pathspec**: Substitui `fnmatch` por `pathspec` para melhor compatibilidade
 - ✅ **Gitignore Syntax**: Suporte completo à sintaxe do `.gitignore`
 - ✅ **Regex + Glob**: Combina padrões glob e regex
+
+##### 📋 Sistema de Diretrizes Personalizadas
+
+```python
+def load_guidelines():
+    """
+    Lê o arquivo de diretrizes do projeto (Markdown) para usar como prompt base.
+    """
+    guidelines_path = os.path.join(WORKSPACE, "knowledge", "ai-review-guidelines.md")
+    if not os.path.exists(guidelines_path):
+        log(f"⚠️ Arquivo de diretrizes não encontrado em: {guidelines_path}")
+        return ""
+    with open(guidelines_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+# Uso no prompt
+guidelines = load_guidelines()
+prompt = f"{guidelines}\n\nAgora analise o arquivo `{filename}` com base nessas diretrizes."
+```
+
+**Características do Sistema:**
+
+- 📝 **Flexível**: Permite definir diretrizes específicas do projeto
+- 🎯 **Consistente**: Garante análises alinhadas com padrões da equipe
+- 🔧 **Configurável**: Arquivo de diretrizes personalizável por projeto
+- 📚 **Documentado**: Diretrizes claras e organizadas em Markdown
 
 ##### 🤖 Integração com APIs de IA
 
@@ -430,18 +458,19 @@ for filename, content in changed_files:
 
 ### Variáveis de Ambiente
 
-| Variável              | Descrição                     | Padrão              |
-| --------------------- | ----------------------------- | ------------------- |
-| `OPENAI_API_KEY`      | Chave da API OpenAI           | -                   |
-| `CLAUDE_API_KEY`      | Chave da API Anthropic Claude | -                   |
-| `MODEL_NAME`          | Modelo de IA a usar           | `gpt-5`             |
-| `GITHUB_TOKEN`        | Token do GitHub               | -                   |
-| `GITHUB_REPOSITORY`   | Repositório (owner/repo)      | -                   |
-| `GITHUB_PR_NUMBER`    | Número do PR                  | -                   |
-| `ANALYZE_LIMIT`       | Limite de arquivos            | `10`                |
-| `IGNORE_FILE_CONTENT` | Padrões regex                 | `""`                |
-| `IGNORE_FILE_PATH`    | Arquivo de ignore             | `.ai-review-ignore` |
-| `CACHE_DIR`           | Diretório do cache            | `cache`             |
+| Variável              | Descrição                     | Padrão                              |
+| --------------------- | ----------------------------- | ----------------------------------- |
+| `OPENAI_API_KEY`      | Chave da API OpenAI           | -                                   |
+| `CLAUDE_API_KEY`      | Chave da API Anthropic Claude | -                                   |
+| `MODEL_NAME`          | Modelo de IA a usar           | `gpt-5`                             |
+| `GITHUB_TOKEN`        | Token do GitHub               | -                                   |
+| `GITHUB_REPOSITORY`   | Repositório (owner/repo)      | -                                   |
+| `GITHUB_PR_NUMBER`    | Número do PR                  | -                                   |
+| `ANALYZE_LIMIT`       | Limite de arquivos            | `10`                                |
+| `IGNORE_FILE_CONTENT` | Padrões regex                 | `""`                                |
+| `IGNORE_FILE_PATH`    | Arquivo de ignore             | `.ai-review-ignore`                 |
+| `GUIDELINES_PATH`     | Arquivo de diretrizes         | `knowledge/ai-review-guidelines.md` |
+| `CACHE_DIR`           | Diretório do cache            | `cache`                             |
 
 ### Modelos Suportados
 
@@ -561,6 +590,65 @@ cache_dir = os.path.join(os.getenv("GITHUB_WORKSPACE", "."), "cache", "ai_review
 if os.path.exists(cache_dir):
     shutil.rmtree(cache_dir)
     print(f"Cache limpo: {cache_dir}")
+```
+
+---
+
+## 📋 Sistema de Diretrizes Personalizadas
+
+### Configuração das Diretrizes
+
+O sistema permite definir diretrizes específicas do projeto através do arquivo `knowledge/ai-review-guidelines.md`:
+
+```markdown
+# Diretrizes de Análise de Código (IA)
+
+Você deve analisar o código seguindo os princípios abaixo:
+
+- Clean Code, SOLID, KISS, DRY
+- Boas práticas de segurança (XSS, SQL Injection, CSRF, credenciais expostas)
+- Manutenibilidade, legibilidade e organização
+- Não reescrever o código inteiro, apenas sugerir melhorias objetivas
+- Responder sempre no formato:
+
+### 📄 {nome_do_arquivo}
+
+**Vulnerabilidades**
+
+- ...
+
+**Melhorias sugeridas**
+
+- ...
+
+**Resumo final**
+
+- ...
+```
+
+### Características do Sistema
+
+| Característica   | Descrição                                         |
+| ---------------- | ------------------------------------------------- |
+| **Flexível**     | Permite definir diretrizes específicas do projeto |
+| **Consistente**  | Garante análises alinhadas com padrões da equipe  |
+| **Configurável** | Arquivo de diretrizes personalizável por projeto  |
+| **Documentado**  | Diretrizes claras e organizadas em Markdown       |
+
+### Exemplos de Diretrizes Específicas
+
+- **Padrões de Nomenclatura**: Convenções específicas da equipe
+- **Arquitetura**: Padrões arquiteturais do projeto
+- **Segurança**: Regras de segurança particulares do domínio
+- **Formato**: Formato de resposta personalizado
+- **Qualidade**: Critérios de qualidade específicos
+
+### Configuração via Action
+
+```yaml
+- uses: filipepiresg/ai-code-review-action@v1
+  with:
+    guidelines_path: "docs/code-review-rules.md"
 ```
 
 ---

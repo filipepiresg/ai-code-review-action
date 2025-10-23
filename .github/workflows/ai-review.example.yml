@@ -52,6 +52,9 @@ jobs:
 
           # Arquivo de ignore (opcional)
           ignore_file_path: ".ai-review-ignore"
+
+          # Diretrizes personalizadas (opcional)
+          guidelines_path: "knowledge/ai-review-guidelines.md"
 # ===============================================
 # 🔧 CONFIGURAÇÃO AVANÇADA
 # ===============================================

@@ -97,6 +97,25 @@ inputs:
     required: false
     default: ""
 
+  guidelines_path:
+    description: |
+      Caminho para arquivo de diretrizes personalizadas do projeto.
+      Este arquivo contém as diretrizes específicas que a IA deve seguir durante a análise.
+      Se não especificado, usa o arquivo padrão: knowledge/ai-review-guidelines.md
+
+      Exemplo de conteúdo do arquivo:
+      - Princípios de Clean Code, SOLID, KISS, DRY
+      - Boas práticas de segurança
+      - Formato de resposta desejado
+      - Padrões específicos do projeto
+
+      Exemplos de caminho:
+      - knowledge/ai-review-guidelines.md
+      - docs/code-review-rules.md
+      - .github/ai-guidelines.md
+    required: false
+    default: "knowledge/ai-review-guidelines.md"
+
 # ===============================================
 # 🚀 EXECUÇÃO DA ACTION
 # ===============================================
@@ -161,6 +180,7 @@ runs:
         ANALYZE_LIMIT: ${{ inputs.analyze_limit }}
         IGNORE_FILE_CONTENT: ${{ inputs.ignore_file_content }}
         IGNORE_FILE_PATH: ${{ inputs.ignore_file_path }}
+        GUIDELINES_PATH: ${{ inputs.guidelines_path }}
         CACHE_DIR: cache
 
       run: |

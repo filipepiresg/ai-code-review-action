@@ -110,6 +110,9 @@ jobs:
 
           # Arquivo de ignore (opcional)
           ignore_file_path: ".ai-review-ignore"
+
+          # Diretrizes personalizadas (opcional)
+          guidelines_path: "knowledge/ai-review-guidelines.md"
 ```
 
 ---
@@ -152,6 +155,19 @@ jobs:
 | `ignore_file_content` | Padrões regex (um por linha) | `^src/__tests__/`   |
 | `ignore_file_path`    | Caminho do arquivo de ignore | `.ai-review-ignore` |
 
+### 📋 Configurações de Diretrizes
+
+| Parâmetro         | Descrição                                       | Exemplo                             |
+| ----------------- | ----------------------------------------------- | ----------------------------------- |
+| `guidelines_path` | Caminho do arquivo de diretrizes personalizadas | `knowledge/ai-review-guidelines.md` |
+
+**Sistema de Diretrizes Personalizadas:**
+
+- 📝 **Flexível**: Permite definir diretrizes específicas do projeto
+- 🎯 **Consistente**: Garante análises alinhadas com padrões da equipe
+- 🔧 **Configurável**: Arquivo de diretrizes personalizável por projeto
+- 📚 **Documentado**: Diretrizes claras e organizadas em Markdown
+
 ### 💾 Sistema de Cache Automático
 
 A action agora utiliza um **sistema de cache automático** baseado em GitHub Artifacts que:
@@ -160,6 +176,46 @@ A action agora utiliza um **sistema de cache automático** baseado em GitHub Art
 - 💰 **Economia**: Reduz chamadas desnecessárias às APIs de IA
 - 🔄 **Consistência**: Garante resultados idênticos para código igual
 - 🚀 **Automático**: Não requer configuração manual - funciona automaticamente
+
+---
+
+## 📋 Arquivo de Diretrizes
+
+Crie um arquivo `knowledge/ai-review-guidelines.md` na raiz do seu projeto para personalizar as diretrizes de análise:
+
+```markdown
+# Diretrizes de Análise de Código (IA)
+
+Você deve analisar o código seguindo os princípios abaixo:
+
+- Clean Code, SOLID, KISS, DRY
+- Boas práticas de segurança (XSS, SQL Injection, CSRF, credenciais expostas)
+- Manutenibilidade, legibilidade e organização
+- Não reescrever o código inteiro, apenas sugerir melhorias objetivas
+- Responder sempre no formato:
+
+### 📄 {nome_do_arquivo}
+
+**Vulnerabilidades**
+
+- ...
+
+**Melhorias sugeridas**
+
+- ...
+
+**Resumo final**
+
+- ...
+```
+
+**Exemplos de diretrizes específicas:**
+
+- Padrões de nomenclatura da equipe
+- Convenções de arquitetura específicas
+- Regras de segurança particulares do domínio
+- Formato de resposta personalizado
+- Critérios de qualidade específicos
 
 ---
 
@@ -219,6 +275,7 @@ vendor/
       ^docs/
       \.md$
     ignore_file_path: ".ai-review-ignore"
+    guidelines_path: "docs/code-review-rules.md"
 ```
 
 ### Usando Apenas Claude

@@ -43,6 +43,7 @@ PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")         # Número do Pull Request
 ANALYZE_LIMIT = int(os.getenv("ANALYZE_LIMIT", "10"))                     # Máximo de arquivos a analisar
 IGNORE_FILE_CONTENT = os.getenv("IGNORE_FILE_CONTENT", "")                # Padrões regex para ignorar
 IGNORE_FILE_PATH = os.getenv("IGNORE_FILE_PATH") or ".ai-review-ignore"   # Caminho do arquivo de ignore
+GUIDELINES_PATH = os.getenv("GUIDELINES_PATH")
 
 # Extensões de arquivos suportadas para análise
 SUPPORTED_EXTENSIONS = (
@@ -194,6 +195,18 @@ def should_ignore(filename, ignore_globs, ignore_regex):
         return True
     return False
 
+def load_guidelines():
+    """
+    Lê o arquivo de diretrizes do projeto (Markdown) para usar como prompt base.
+    """
+    workspace = GUIDELINES_PATH if GUIDELINES_PATH else ""
+    guidelines_path = os.path.join(workspace, "knowledge", "ai-review-guidelines.md")
+    if not os.path.exists(guidelines_path):
+        log(f"⚠️ Arquivo de diretrizes não encontrado em: {guidelines_path}")
+        return ""
+    with open(guidelines_path, "r", encoding="utf-8") as f:
+        return f.read()
+
 def get_pull_request():
     """
     Obtém o objeto Pull Request do GitHub.
@@ -322,35 +335,8 @@ def analyze_code(filename, content):
         log(f" └── ⚡ Arquivo cacheado")
         return cached["analysis"]
 
-    prompt = f"""
-Você é um especialista em análise de código e segurança. Analise o arquivo `{filename}` e responda em português, de forma organizada, com foco em:
-
-1. **Problemas de segurança ou vulnerabilidades** (injeção, XSS, SQLi, credenciais, etc.);
-2. **Boas práticas violadas** (complexidade, performance, organização);
-3. **Sugestões de melhoria** (clareza, manutenção, eficiência);
-4. **Observações gerais** (coerência, padrões, etc.).
-
-Use o formato:
-
-### 📄 {filename}
-**Vulnerabilidades**
-- ...
-**Melhorias sugeridas**
-- ...
-**Boas práticas**
-- ...
-**Resumo final**
-- ...
-
-Analise o código abaixo com base nas diretrizes:
-
-- Siga o padrão desse arquivo e mantenha o mesmo padrão de resposta para todos os arquivos
-- Melhore legibilidade, segurança, performance e manutenibilidade.
-- Aponte problemas específicos e sugira melhorias com exemplos.
-- Não reescreva todo o código, apenas as partes relevantes.
-- Siga Clean Code, SOLID, KISS e convenções da linguagem.
-"""
-
+    guidelines = load_guidelines()
+    prompt = f"{guidelines}\n\nAgora analise o arquivo `{filename}` com base nessas diretrizes."
     try:
         chunks = chunk_code(content)
         report = ""
@@ -407,12 +393,11 @@ if __name__ == "__main__":
     DEBUG_VARS = (
         "GITHUB_WORKSPACE", "GITHUB_REPOSITORY", "GITHUB_PR_NUMBER",
         "OPENAI_API_KEY", "CLAUDE_API_KEY", "MODEL_NAME", "ANALYZE_LIMIT",
-        "IGNORE_FILE_CONTENT", "IGNORE_FILE_PATH", "CACHE_DIR"
+        "IGNORE_FILE_CONTENT", "IGNORE_FILE_PATH", "CACHE_DIR",
+        "GUIDELINES_PATH"
     )
     for var in DEBUG_VARS:
         print(f" - {var}={os.getenv(var)}")
-    if os.path.exists(CACHE_DIR):
-        print(f" - Cache path: {CACHE_DIR}")
     print("=============================")
 
     # Validação de variáveis obrigatórias do GitHub
