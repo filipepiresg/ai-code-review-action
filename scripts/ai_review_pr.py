@@ -446,6 +446,10 @@ if __name__ == "__main__":
     # ===============================================
     changed_files = []
     for f in pr.get_files():
+        if f.status == "removed":
+            # log(f"🚫 Arquivo removido: {f.filename}")
+            continue
+        
         # Limite de arquivos a analisar
         if len(changed_files) >= ANALYZE_LIMIT:
             break
@@ -466,7 +470,7 @@ if __name__ == "__main__":
         file_hash = get_file_hash(content)
         cached = load_cache(file_hash)
         if cached is not None:
-            log(f"🚫 Arquivo já avaliado: {f.filename}")
+            # log(f"🚫 Arquivo já avaliado: {f.filename}")
             continue
 
         changed_files.append((f.filename, content))
