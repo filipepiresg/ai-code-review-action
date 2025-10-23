@@ -69,8 +69,8 @@ inputs:
   model:
     description: |
       Modelo de IA a ser usado para análise.
-      OpenAI: gpt-4, gpt-4-turbo, gpt-5
-      Claude: claude-3-sonnet-20240229, claude-3-opus-20240229
+      OpenAI: gpt-4-mini, gpt-4, gpt-4-turbo, gpt-5
+      Claude: claude-opus-4-1, claude-haiku-4-5, claude-sonnet-4-5
       Padrão: gpt-5
     required: false
     default: "gpt-5"

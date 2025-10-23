@@ -142,8 +142,8 @@ jobs:
 
 **Modelos suportados:**
 
-- **OpenAI**: `gpt-4`, `gpt-4-turbo`, `gpt-5`
-- **Claude**: `claude-3-sonnet-20240229`, `claude-3-opus-20240229`
+- **OpenAI**: `gpt-4-mini`, `gpt-4`, `gpt-4-turbo`, `gpt-5`
+- **Claude**: `claude-opus-4-1`, `claude-haiku-4-5`, `claude-sonnet-4-5`
 
 ### 🚫 Configurações de Ignore
 
@@ -230,7 +230,7 @@ vendor/
     github_token: ${{ secrets.GITHUB_TOKEN }}
     repository: ${{ github.repository }}
     pr_number: ${{ github.event.pull_request.number }}
-    model: claude-3-opus-20240229
+    model: claude-sonnet-4-5
 ```
 
 ---

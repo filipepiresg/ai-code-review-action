@@ -228,7 +228,7 @@ jobs:
 #           repository: ${{ github.repository }}
 #           pr_number: ${{ github.event.pull_request.number }}
 #           analyze_limit: 8
-#           model: claude-3-opus-20240229
+#           model: claude-sonnet-4-5
 #           ignore_file_path: ".ai-review-ignore"
 
 # ===============================================

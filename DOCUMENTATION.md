@@ -454,8 +454,8 @@ for filename, content in changed_files:
 
 **Claude:**
 
-- `claude-3-sonnet-20240229`
-- `claude-3-opus-20240229`
+- `claude-opus-4-1`
+- `claude-haiku-4-5`
 - `claude-sonnet-4-5` (padrão para Claude)
 
 ### Extensões Suportadas

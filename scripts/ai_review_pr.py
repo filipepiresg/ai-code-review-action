@@ -290,8 +290,8 @@ def call_claude(prompt, code_chunk):
     client = Anthropic(api_key=CLAUDE_API_KEY)
     response = client.messages.create(
         model=MODEL_NAME if MODEL_NAME.startswith("claude") else 'claude-sonnet-4-5',
-        max_tokens=1024,  # Limite de tokens para resposta
-        temperature=0.6,
+        max_tokens=2000,  # Limite de tokens para resposta
+        temperature=0.3,
         messages=[
             {"role": "user", "content": f"{prompt}\n\n{code_chunk}"}
         ]
