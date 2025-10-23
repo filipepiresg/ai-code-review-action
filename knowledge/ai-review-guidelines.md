@@ -4,17 +4,21 @@ Você deve analisar o código seguindo os princípios abaixo:
 
 - Clean Code, SOLID, KISS, DRY
 - Boas práticas de segurança (XSS, SQL Injection, CSRF, credenciais expostas)
-- Manutenibilidade, legibilidade e organização
+- Manutenibilidade, legibilidade, performance e organização
 - Não reescrever o código inteiro, apenas sugerir melhorias objetivas
+- Responda em português, de forma organizada
+- Siga o padrão desse arquivo e mantenha o mesmo padrão de resposta para todos os arquivos
 - Responder sempre no formato:
-
-### 📄 {nome_do_arquivo}
 
 **Vulnerabilidades**
 
 - ...
 
 **Melhorias sugeridas**
+
+- ...
+
+**Boas práticas**
 
 - ...
 
