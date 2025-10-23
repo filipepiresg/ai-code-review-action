@@ -323,7 +323,7 @@ def call_claude(prompt, code_chunk):
     response = client.messages.create(
         model=MODEL_NAME if MODEL_NAME.startswith("claude") else 'claude-sonnet-4-5',
         max_tokens=2000,  # Limite de tokens para resposta
-        temperature=0.3,
+        temperature=0.4,
         messages=[
             {"role": "user", "content": f"{prompt}\n\n{code_chunk}"}
         ]
@@ -492,7 +492,7 @@ if __name__ == "__main__":
         # ===============================================
         # 💬 PUBLICAÇÃO DO RELATÓRIO
         # ===============================================
-        report = "# 🤖 Revisão automática com LLM\n"+f"## 📄 {filename}\n" + analysis
+        report = "# 🤖 Revisão automática com LLM\n" + analysis
         # Trunca o relatório se exceder limite do GitHub (65.536 caracteres)
         summary = shorten_multiline(report, 60000, placeholder="\n\n... [comentário truncado]")
         post_comment(pr, summary)
