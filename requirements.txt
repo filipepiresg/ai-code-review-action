@@ -1,2 +1,35 @@
-openai>=1.50.0
-PyGithub>=2.3.0
+# ===============================================
+# 🤖 AI Code Review Action - Dependências Python
+# ===============================================
+# Este arquivo contém todas as dependências necessárias para a execução
+# da AI Code Review Action.
+
+# ===============================================
+# 🔑 APIs DE IA
+# ===============================================
+openai>=1.0.0                    # Cliente para API OpenAI (GPT-4/5)
+anthropic>=0.7.0                 # Cliente para API Anthropic Claude
+
+# ===============================================
+# 🔗 INTEGRAÇÃO GITHUB
+# ===============================================
+PyGithub>=1.59.0                 # Cliente para GitHub API
+# requests>=2.28.0                 # Para requisições HTTP
+
+# ===============================================
+# 🛠️ UTILITÁRIOS
+# ===============================================
+pathspec>=0.11.0                 # Para compatibilidade com .gitignore
+# hashlib2>=1.0.0                  # Para geração de hash (built-in, mas explícito)
+
+# ===============================================
+# 📝 PROCESSAMENTO DE TEXTO
+# ===============================================
+# textwrap2>=0.9.0                 # Para truncamento inteligente de texto
+
+# ===============================================
+# 🔧 DESENVOLVIMENTO (opcional)
+# ===============================================
+# pytest>=7.0.0                  # Para testes (descomente se necessário)
+# black>=23.0.0                  # Para formatação de código (descomente se necessário)
+# flake8>=6.0.0                  # Para linting (descomente se necessário)

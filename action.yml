@@ -1,46 +1,174 @@
+# ===============================================
+# 🤖 AI Code Review Action - Configuração
+# ===============================================
+# Esta GitHub Action realiza revisão automática de código usando IA
+# Suporta OpenAI GPT-4/5 e Anthropic Claude 3.x
+# Analisa arquivos modificados em PRs e publica feedback automaticamente
+
 name: "AI Code Review Action"
-description: "Executa revisão automática de código com GPT-5 e publica feedback no PR."
+description: "Executa revisão automática de código com GPT-5 (ou ClaudeAI) e publica feedback no PR."
 author: "Filipe Pires"
 branding:
   icon: "check-circle"
   color: "blue"
 
 inputs:
+  # ===============================================
+  # 🔑 CHAVES DE API (obrigatórias)
+  # ===============================================
   openai_api_key:
-    description: "Chave da API da OpenAI. Use secrets.OPENAI_API_KEY no repositório consumidor."
+    description: |
+      Chave da API da OpenAI para usar GPT-4/5.
+      Configure em: Settings > Secrets > Actions > OPENAI_API_KEY
+      Exemplo: sk-...
+    required: false
+    default: ""
+
+  claude_api_key:
+    description: |
+      Chave da API da Anthropic Claude para usar Claude 3.x.
+      Configure em: Settings > Secrets > Actions > CLAUDEAI_API_KEY
+      Exemplo: sk-ant-...
+    required: false
+    default: ""
+
+  # ===============================================
+  # 🔧 CONFIGURAÇÕES DO GITHUB
+  # ===============================================
+  github_token:
+    description: |
+      Token do GitHub para comentar no PR.
+      Use o token padrão: secrets.GITHUB_TOKEN
+      Permissões necessárias: pull-requests: write
     required: true
+
+  pr_number:
+    description: |
+      Número do Pull Request a ser analisado.
+      Use: { github.event.pull_request.number }
+    required: true
+
+  repository:
+    description: |
+      Nome completo do repositório no formato owner/repo.
+      Use: { github.repository }
+      Exemplo: filipepiresg/ai-code-review-action
+    required: true
+
+  # ===============================================
+  # ⚙️ CONFIGURAÇÕES DE ANÁLISE
+  # ===============================================
   analyze_limit:
-    description: "Número máximo de arquivos a analisar no PR."
+    description: |
+      Número máximo de arquivos a analisar por PR.
+      Útil para PRs grandes com muitos arquivos modificados.
+      Padrão: 10 arquivos
     required: false
     default: "10"
+
   model:
-    description: "Modelo OpenAI a ser usado (ex: gpt-5)."
+    description: |
+      Modelo de IA a ser usado para análise.
+      OpenAI: gpt-4, gpt-4-turbo, gpt-5
+      Claude: claude-3-sonnet-20240229, claude-3-opus-20240229
+      Padrão: gpt-5
     required: false
     default: "gpt-5"
 
+  # ===============================================
+  # 🚫 CONFIGURAÇÕES DE IGNORE
+  # ===============================================
+  ignore_file_content:
+    description: |
+      Lista de padrões regex (um por linha) para ignorar arquivos/pastas.
+      Exemplo:
+      ^src/__tests__/
+      ^node_modules/
+      \.{test,spec}.{j,t}s?(x)$
+      \.json$
+    required: false
+    default: ""
+
+  ignore_file_path:
+    description: |
+      Caminho para arquivo de ignore (sintaxe similar ao .gitignore).
+      Exemplo: .ai-review-ignore
+      Formato: um padrão por linha, comentários com #
+    required: false
+    default: ""
+
+# ===============================================
+# 🚀 EXECUÇÃO DA ACTION
+# ===============================================
 runs:
-  using: "composite"
+  using: "composite" # Permite executar scripts em diferentes shells
   steps:
+    # ===============================================
+    # 📥 PREPARAÇÃO DO AMBIENTE
+    # ===============================================
+    # Baixa o código do repositório para análise
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Baixar cache de análise da IA
+      uses: actions/download-artifact@v4
+      with:
+        name: ai-review-cache-pr-${{ github.event.pull_request.number }}
+        path: ${{ github.workspace }}/cache/
+      continue-on-error: true # Se não existir, ignora o erro
+
+    - name: Cache pip
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles(format('{0}/requirements.txt', github.action_path)) }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    # Configura ambiente Python para execução dos scripts
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: "3.11" # Versão mínima necessária para as dependências
 
     - name: Install dependencies
+      shell: bash
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r ${{ github.action_path }}/requirements.txt
+        # Instala dependências necessárias:
+        # - openai: Cliente para API OpenAI
+        # - PyGithub: Cliente para API GitHub
+        # - pathspec: Para validação de arquivos
 
+    # ===============================================
+    # 🤖 EXECUÇÃO DA ANÁLISE DE CÓDIGO
+    # ===============================================
     - name: Run AI Review script
+      shell: bash
       env:
+        # Chaves de API das LLMs
         OPENAI_API_KEY: ${{ inputs.openai_api_key }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-        OPENAI_MODEL: ${{ inputs.model }}
+        CLAUDE_API_KEY: ${{ inputs.claude_api_key }}
+
+        # Configurações do GitHub
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        GITHUB_REPOSITORY: ${{ inputs.repository }}
+        GITHUB_PR_NUMBER: ${{ inputs.pr_number }}
+
+        # Configurações de análise
+        MODEL_NAME: ${{ inputs.model }}
         ANALYZE_LIMIT: ${{ inputs.analyze_limit }}
+        IGNORE_FILE_CONTENT: ${{ inputs.ignore_file_content }}
+        IGNORE_FILE_PATH: ${{ inputs.ignore_file_path }}
+        CACHE_DIR: cache
+
       run: |
-        python scripts/ai_review_pr.py
+        python "${{ github.action_path }}/scripts/ai_review_pr.py"
+        # Executa o script principal de análise de código
+
+    - name: Salvar cache de análise da IA
+      uses: actions/upload-artifact@v4
+      with:
+        name: ai-review-cache-pr-${{ github.event.pull_request.number }}
+        path: ${{ github.workspace }}/cache/

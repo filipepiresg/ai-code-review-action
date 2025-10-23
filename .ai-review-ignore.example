@@ -1,0 +1,217 @@
+# ===============================================
+# 🤖 AI Code Review Action - Arquivo de Ignore
+# ===============================================
+# Este arquivo define quais arquivos e pastas devem ser ignorados
+# durante a análise de código. Use a sintaxe do .gitignore.
+
+# ===============================================
+# 📁 ARQUIVOS DE TESTE
+# ===============================================
+# Arquivos de teste em diferentes linguagens
+**/*.test.js
+**/*.test.ts
+**/*.test.jsx
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.ts
+**/*.spec.jsx
+**/*.spec.tsx
+**/*_test.py
+**/*_spec.py
+**/test_*.py
+**/spec_*.py
+
+# Pastas de teste
+**/__tests__/
+**/tests/
+**/test/
+**/spec/
+**/testing/
+
+# ===============================================
+# 📦 DEPENDÊNCIAS E PACOTES
+# ===============================================
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+
+# Java
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ===============================================
+# 🔧 ARQUIVOS DE CONFIGURAÇÃO
+# ===============================================
+# Arquivos de configuração que não precisam ser analisados
+*.json
+*.yaml
+*.yml
+*.toml
+*.ini
+*.cfg
+*.conf
+*.config
+
+# Arquivos de lock
+package-lock.json
+yarn.lock
+Pipfile.lock
+poetry.lock
+composer.lock
+
+# ===============================================
+# 📊 ARQUIVOS DE DADOS E LOGS
+# ===============================================
+# Logs
+*.log
+logs/
+log/
+
+# Arquivos de dados
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+*.xlsx
+*.xls
+
+# ===============================================
+# 🏗️ ARQUIVOS DE BUILD E DISTRIBUIÇÃO
+# ===============================================
+# Build outputs
+dist/
+build/
+out/
+bin/
+obj/
+
+# Arquivos compilados
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# ===============================================
+# 📝 DOCUMENTAÇÃO E README
+# ===============================================
+# Arquivos de documentação (opcional - descomente se não quiser analisar)
+# *.md
+# docs/
+# documentation/
+
+# ===============================================
+# 🔒 ARQUIVOS SENSÍVEIS
+# ===============================================
+# Arquivos de ambiente e credenciais
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.key
+*.pem
+*.p12
+*.pfx
+
+# ===============================================
+# 🗂️ ARQUIVOS TEMPORÁRIOS
+# ===============================================
+# Arquivos temporários
+*.tmp
+*.temp
+*.cache
+*.swp
+*.swo
+*~
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===============================================
+# 🎨 ARQUIVOS DE RECURSOS
+# ===============================================
+# Imagens e assets
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+*.ico
+*.webp
+*.bmp
+*.tiff
+
+# Fontes
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.eot
+
+# ===============================================
+# 📱 ARQUIVOS ESPECÍFICOS DE PLATAFORMA
+# ===============================================
+# iOS
+*.xcodeproj/
+*.xcworkspace/
+Pods/
+
+# Android
+*.apk
+*.aab
+.gradle/
+local.properties
+
+# ===============================================
+# 🔧 FERRAMENTAS DE DESENVOLVIMENTO
+# ===============================================
+# IDE e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Coverage reports
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+
+# ===============================================
+# 📋 EXEMPLOS DE USO
+# ===============================================
+# Para ignorar um arquivo específico:
+# src/config/database.js
+
+# Para ignorar uma pasta inteira:
+# src/vendor/
+
+# Para ignorar arquivos com padrão específico:
+# *.min.js
+# *.bundle.js
+
+# Para ignorar arquivos em qualquer lugar:
+# **/temp/
+# **/*.backup

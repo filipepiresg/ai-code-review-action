@@ -1,0 +1,410 @@
+# ===============================================
+# 🤖 AI Code Review Action - Workflow de Exemplo
+# ===============================================
+# Este arquivo demonstra como configurar a AI Code Review Action
+# em diferentes cenários de uso.
+
+# ===============================================
+# 📁 LOCALIZAÇÃO
+# ===============================================
+# Salve este arquivo como: .github/workflows/ai-review.yml
+
+# ===============================================
+# 🚀 CONFIGURAÇÃO BÁSICA
+# ===============================================
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Executar revisão com IA
+        uses: filipepiresg/ai-code-review-action@v1
+        with:
+          # Chaves de API (pelo menos uma obrigatória)
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          claude_api_key: ${{ secrets.CLAUDEAI_API_KEY }}
+
+          # Configurações do GitHub
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          pr_number: ${{ github.event.pull_request.number }}
+
+          # Configurações de análise
+          analyze_limit: 10
+          model: gpt-5
+
+          # Padrões de ignore (opcional)
+          ignore_file_content: |
+            ^src/__tests__/
+            ^node_modules/
+            \.{test,spec}.{j,t}s?(x)$
+            \.json$
+            \.lock$
+
+          # Arquivo de ignore (opcional)
+          ignore_file_path: ".ai-review-ignore"
+# ===============================================
+# 🔧 CONFIGURAÇÃO AVANÇADA
+# ===============================================
+# Para projetos grandes ou com necessidades específicas:
+
+# name: AI Code Review Advanced
+#
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#     paths:
+#       - 'src/**'
+#       - 'lib/**'
+#       - 'app/**'
+#
+# jobs:
+#   ai-review:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#
+#     steps:
+#       - name: Executar revisão com IA
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           # Chaves de API
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           claude_api_key: ${{ secrets.CLAUDEAI_API_KEY }}
+#
+#           # Configurações do GitHub
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#
+#           # Configurações de análise otimizadas
+#           analyze_limit: 20
+#           model: gpt-4-turbo
+#
+#           # Padrões de ignore específicos do projeto
+#           ignore_file_content: |
+#             ^src/__tests__/
+#             ^src/__mocks__/
+#             ^src/vendor/
+#             ^node_modules/
+#             ^dist/
+#             ^build/
+#             \.{test,spec,mock}.{j,t}s?(x)$
+#             \.json$
+#             \.lock$
+#             \.min\.js$
+#             \.bundle\.js$
+#
+#           # Arquivo de ignore personalizado
+#           ignore_file_path: ".ai-review-ignore"
+
+# ===============================================
+# 🎯 CONFIGURAÇÃO PARA PYTHON
+# ===============================================
+# Otimizada para projetos Python:
+
+# name: AI Code Review Python
+#
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#     paths:
+#       - '**/*.py'
+#
+# jobs:
+#   ai-review:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#
+#     steps:
+#       - name: Executar revisão com IA
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#           analyze_limit: 15
+#           model: gpt-5
+#           ignore_file_content: |
+#             ^tests/
+#             ^test/
+#             ^__tests__/
+#             ^__pycache__/
+#             ^venv/
+#             ^env/
+#             ^\.pytest_cache/
+#             ^coverage/
+#             \.pyc$
+#             \.pyo$
+#             \.pyd$
+#             \_test\.py$
+#             \_spec\.py$
+#           ignore_file_path: ".ai-review-ignore"
+
+# ===============================================
+# 🎯 CONFIGURAÇÃO PARA JAVASCRIPT/TYPESCRIPT
+# ===============================================
+# Otimizada para projetos Node.js/React:
+
+# name: AI Code Review JavaScript
+#
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#     paths:
+#       - 'src/**'
+#       - 'lib/**'
+#       - 'components/**'
+#
+# jobs:
+#   ai-review:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#
+#     steps:
+#       - name: Executar revisão com IA
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#           analyze_limit: 12
+#           model: gpt-4-turbo
+#           ignore_file_content: |
+#             ^src/__tests__/
+#             ^src/__mocks__/
+#             ^src/test/
+#             ^src/tests/
+#             ^node_modules/
+#             ^dist/
+#             ^build/
+#             ^coverage/
+#             \.{test,spec,mock}.{j,t}s?(x)$
+#             \.min\.js$
+#             \.bundle\.js$
+#             \.chunk\.js$
+#           ignore_file_path: ".ai-review-ignore"
+
+# ===============================================
+# 🔒 CONFIGURAÇÃO COM CLAUDE APENAS
+# ===============================================
+# Para usar apenas Claude (sem OpenAI):
+
+# name: AI Code Review Claude Only
+#
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#
+# jobs:
+#   ai-review:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#
+#     steps:
+#       - name: Executar revisão com Claude
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           claude_api_key: ${{ secrets.CLAUDEAI_API_KEY }}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#           analyze_limit: 8
+#           model: claude-3-opus-20240229
+#           ignore_file_path: ".ai-review-ignore"
+
+# ===============================================
+# ⚡ CONFIGURAÇÃO OTIMIZADA PARA PERFORMANCE
+# ===============================================
+# Para projetos com muitos arquivos:
+
+# name: AI Code Review Performance
+#
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#
+# jobs:
+#   ai-review:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#
+#     steps:
+#       - name: Executar revisão com IA
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#           analyze_limit: 5  # Limite menor para performance
+#           model: gpt-4-turbo  # Modelo mais rápido
+#           ignore_file_content: |
+#             ^.*test.*/
+#             ^.*spec.*/
+#             ^.*mock.*/
+#             ^node_modules/
+#             ^vendor/
+#             ^dist/
+#             ^build/
+#             ^coverage/
+#             \.{test,spec,mock,min,bundle,chunk}\.
+#             \.json$
+#             \.lock$
+#             \.log$
+#           ignore_file_path: ".ai-review-ignore"
+
+# ===============================================
+# 📋 CONFIGURAÇÃO COM MÚLTIPLOS JOBS
+# ===============================================
+# Para análise em paralelo por tipo de arquivo:
+
+# name: AI Code Review Multi-Job
+#
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#
+# jobs:
+#   review-backend:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     if: contains(github.event.pull_request.changed_files, '.py') || contains(github.event.pull_request.changed_files, '.java')
+#
+#     steps:
+#       - name: Revisar código backend
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#           analyze_limit: 8
+#           model: gpt-5
+#           ignore_file_content: |
+#             ^tests/
+#             ^test/
+#             ^__pycache__/
+#             ^target/
+#             \.pyc$
+#             \.class$
+#           ignore_file_path: ".ai-review-ignore"
+#
+#   review-frontend:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     if: contains(github.event.pull_request.changed_files, '.js') || contains(github.event.pull_request.changed_files, '.ts')
+#
+#     steps:
+#       - name: Revisar código frontend
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#           analyze_limit: 8
+#           model: gpt-4-turbo
+#           ignore_file_content: |
+#             ^src/__tests__/
+#             ^src/__mocks__/
+#             ^node_modules/
+#             ^dist/
+#             \.{test,spec,mock}\.
+#             \.min\.js$
+#           ignore_file_path: ".ai-review-ignore"
+
+# ===============================================
+# 🔧 CONFIGURAÇÃO COM CONDIÇÕES
+# ===============================================
+# Para executar apenas em certas condições:
+
+# name: AI Code Review Conditional
+#
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#
+# jobs:
+#   ai-review:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     # Executa apenas se o PR tem mais de 5 arquivos modificados
+#     if: github.event.pull_request.changed_files > 5
+#
+#     steps:
+#       - name: Executar revisão com IA
+#         uses: filipepiresg/ai-code-review-action@v1
+#         with:
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           repository: ${{ github.repository }}
+#           pr_number: ${{ github.event.pull_request.number }}
+#           analyze_limit: 10
+#           model: gpt-5
+#           ignore_file_path: ".ai-review-ignore"
+
+# ===============================================
+# 📝 NOTAS IMPORTANTES
+# ===============================================
+#
+# 1. **Secrets**: Configure as chaves de API em Settings > Secrets > Actions
+# 2. **Permissões**: Certifique-se de que o token tem permissão para comentar em PRs
+# 3. **Limites**: Ajuste analyze_limit baseado no tamanho do seu projeto
+# 4. **Modelos**: Escolha o modelo baseado na sua necessidade (velocidade vs qualidade)
+# 5. **Ignore**: Use ignore_file_path para padrões complexos, ignore_file_content para simples
+# 6. **Performance**: Para projetos grandes, considere usar paths para limitar arquivos
+# 7. **Cache**: O sistema de cache é automático e melhora performance significativamente
+#
+# ===============================================
+# 🆘 TROUBLESHOOTING
+# ===============================================
+#
+# - **Erro de chave**: Verifique se as secrets estão configuradas corretamente
+# - **Arquivo não encontrado**: Verifique o caminho do ignore_file_path
+# - **Regex inválida**: Teste seus padrões em ignore_file_content
+# - **Limite excedido**: Ajuste analyze_limit se necessário
+# - **Performance lenta**: Use cache e ajuste limites
+#
+# ===============================================
+# 📚 DOCUMENTAÇÃO COMPLETA
+# ===============================================
+#
+# Para mais informações, consulte:
+# - README.md: Documentação principal
+# - DOCUMENTATION.md: Documentação técnica detalhada
+# - .ai-review-ignore.example: Exemplos de padrões de ignore
+#
+# ===============================================
+# 🤝 SUPORTE
+# ===============================================
+#
+# - Issues: https://github.com/filipepiresg/ai-code-review-action/issues
+# - Discussions: https://github.com/filipepiresg/ai-code-review-action/discussions
+# - Contato: @filipepiresg
