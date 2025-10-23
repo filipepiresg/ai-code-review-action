@@ -197,15 +197,34 @@ def should_ignore(filename, ignore_globs, ignore_regex):
 
 def load_guidelines():
     """
-    Lê o arquivo de diretrizes do projeto (Markdown) para usar como prompt base.
+    1. Tenta carregar diretrizes do repositório do usuário (WORKSPACE)
+    2. Se não existir, tenta carregar do repositório da Action (GITHUB_ACTION_PATH)
     """
-    workspace = GUIDELINES_PATH if GUIDELINES_PATH else ""
-    guidelines_path = os.path.join(workspace, "knowledge", "ai-review-guidelines.md")
-    if not os.path.exists(guidelines_path):
-        log(f"⚠️ Arquivo de diretrizes não encontrado em: {guidelines_path}")
-        return ""
-    with open(guidelines_path, "r", encoding="utf-8") as f:
-        return f.read()
+    # Caminho no repositório onde a Action está sendo executada (projeto do usuário)
+    workspace = os.getenv("GITHUB_WORKSPACE", os.getcwd())
+    user_guidelines = os.path.join(workspace, "knowledge", "ai-review-guidelines.md")
+
+    # 1️⃣ Verifica no repositório do usuário (workflow)
+    if os.path.exists(user_guidelines):
+        log(f"📘 Usando diretrizes do repositório do usuário: {user_guidelines}")
+        with open(user_guidelines, "r", encoding="utf-8") as f:
+            return f.read()
+
+    # Caminho no repositório da própria Action
+    action_path = os.getenv("GITHUB_ACTION_PATH")
+    action_guidelines = None
+    if action_path:
+        action_guidelines = os.path.join(action_path, "knowledge", "ai-review-guidelines.md")
+
+    # 2️⃣ Se não existir, verifica no repositório da Action
+    if action_guidelines and os.path.exists(action_guidelines):
+        log(f"📗 Usando diretrizes padrão da Action: {action_guidelines}")
+        with open(action_guidelines, "r", encoding="utf-8") as f:
+            return f.read()
+
+    # 3️⃣ Se nada existir, retorna vazio
+    log("⚠️ Nenhum arquivo de diretrizes encontrado (workspace nem action)")
+    return ""
 
 def get_pull_request():
     """
